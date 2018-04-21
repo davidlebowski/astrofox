@@ -11,13 +11,17 @@ namespace Astrofox
 	// - Game entities can drift in space, therefore it has a Velocity property that it uses to move the object every frame.
 	public class Actor : MonoBehaviour
 	{
+		private readonly static Bounds s_noBounds = new Bounds();
+
 		public delegate void OnDeathDelegate(Actor deadActor);
 		public event OnDeathDelegate OnDeath;
 
 		[SerializeField] private bool m_wrap = true;
 		[SerializeField] private float m_maxSpeed = 1;
+		[SerializeField] private float m_mass = 1;
 		private Vector3 m_velocity;
 		private Transform m_transform;
+		private Collider m_collider;
 
 		public Vector3 Velocity
 		{
@@ -33,7 +37,13 @@ namespace Astrofox
 				}
 			}
 		}
-		public float Mass = 1;
+		public Bounds Bounds
+		{
+			get
+			{
+				return m_collider != null ? m_collider.bounds : s_noBounds;
+			}
+		}
 		public bool IsDead { set; get; }
 
 		private void Awake()
@@ -47,6 +57,7 @@ namespace Astrofox
 				body.isKinematic = true;
 				body.useGravity = false;
 			}
+			m_collider = GetComponent<Collider>();
 		}
 
 		private void Update()
@@ -62,6 +73,12 @@ namespace Astrofox
 		{
 			Vector3 position = m_transform.position;
 			Bounds worldBounds = Systems.GameCamera.WorldBounds;
+			if (Bounds != s_noBounds)
+			{
+				// Take into account the actor's bounds
+				worldBounds.max += Bounds.extents;
+				worldBounds.min -= Bounds.extents;
+			}
 			if (position.x > worldBounds.max.x)
 			{
 				// Wrap right edge
@@ -91,7 +108,7 @@ namespace Astrofox
 			{
 				force = transform.localToWorldMatrix * force;
 			}
-			Velocity += (force * Time.deltaTime) / Mass;
+			Velocity += (force * Time.deltaTime) / m_mass;
 		}
 
 		public void Kill()

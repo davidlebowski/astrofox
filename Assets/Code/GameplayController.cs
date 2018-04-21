@@ -82,6 +82,9 @@ namespace Astrofox
 			// Pick the spawn location
 			Vector3 spawnPoint = Systems.GameCamera.GetRandomPointOnFrustumInWorldSpace();
 			Actor actorInst = Systems.GameObjectFactory.Instantiate(prefab);
+			// Make sure the object appears off-screen
+			spawnPoint.x += actorInst.Bounds.extents.x * Mathf.Sign(spawnPoint.x);
+			spawnPoint.y += actorInst.Bounds.extents.y * Mathf.Sign(spawnPoint.y);
 			actorInst.transform.position = spawnPoint;
 			++m_numSpawnedActors;
 			actorInst.OnDeath += actor => --m_numSpawnedActors;
