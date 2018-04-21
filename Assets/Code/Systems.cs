@@ -15,6 +15,8 @@ namespace Astrofox
 		public static GameCamera GameCamera;
 		public static GameUI GameUI;
 		public static GameConfig GameConfig;
+		public static PlayerProfile PlayerProfile;
 		public static IGameplaySessionController GameplaySessionController;
+		public static IScoreController ScoreController;
 	}
 }

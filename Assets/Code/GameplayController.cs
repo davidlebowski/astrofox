@@ -11,6 +11,7 @@ namespace Astrofox
 		private Actor m_playerActor;
 
 		private bool m_hasStarted;
+		private int m_currentScore;
 
 		public void StartGameplay()
 		{
@@ -21,6 +22,17 @@ namespace Astrofox
 			}
 			m_hasStarted = true;
 			SpawnPlayer();
+		private void StopGameplay()
+		{
+			int bestScore = Systems.PlayerProfile.BestScore;
+			if (m_currentScore > bestScore)
+			{
+				Systems.PlayerProfile.BestScore = m_currentScore;
+				Systems.PlayerProfile.Commit();
+			}
+			StopCoroutine(m_spawnerCoroutine);
+		}
+
 		}
 
 		private void SpawnPlayer()
@@ -49,6 +61,11 @@ namespace Astrofox
 				return;
 			}
 			m_playerController.Update();
+		}
+
+		public void AddScore(int amount)
+		{
+			m_currentScore += amount;
 		}
 	}
 }

@@ -20,6 +20,7 @@ namespace Astrofox
 			Systems.GameUI = m_gameUI;
 			Systems.GameplaySessionController = this;
 			Systems.GameConfig = m_gameConfig;
+			Systems.PlayerProfile = PlayerProfile.Load(); 
 
 			m_gameUI.OpenScreen(m_gameUI.ScreenMainMenu);
 		}
@@ -34,6 +35,7 @@ namespace Astrofox
 			m_gameUI.CloseAllScreens();
 			m_gameplayController = m_gameplayContainer.AddComponent<GameplayController>();
 			m_gameplayController.StartGameplay();
+			Systems.ScoreController = m_gameplayController;
 			return true;
 		}
 
