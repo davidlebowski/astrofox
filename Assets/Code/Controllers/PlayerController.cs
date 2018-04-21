@@ -25,19 +25,19 @@ namespace Astrofox
 			}
 			if (Input.GetKey(KeyCode.A))
 			{
-				PlayerActor.transform.Rotate(Vector3.forward * 180f * Time.deltaTime, Space.World);
+				PlayerActor.transform.Rotate(Vector3.forward * Systems.GameConfig.PlayerRotationSpeed * Time.deltaTime, Space.World);
 			}
 			else if (Input.GetKey(KeyCode.D))
 			{
-				PlayerActor.transform.Rotate(-Vector3.forward * 180f * Time.deltaTime, Space.World);
+				PlayerActor.transform.Rotate(-Vector3.forward * Systems.GameConfig.PlayerRotationSpeed * Time.deltaTime, Space.World);
 			}
 			if (Input.GetKey(KeyCode.W))
 			{
-				PlayerActor.AddForce(Vector3.left, Space.Self);
+				PlayerActor.AddForce(Vector3.left * Systems.GameConfig.PlayerForwardThrust, Space.Self);
 			}
 			if (Input.GetKey(KeyCode.S))
 			{
-				PlayerActor.AddForce(Vector3.right * 0.5f, Space.Self);
+				PlayerActor.AddForce(Vector3.right * Systems.GameConfig.PlayerBackwardThrust, Space.Self);
 			}
 		}
 	}
