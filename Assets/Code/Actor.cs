@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,6 @@ namespace Astrofox
 		[SerializeField] private bool m_wrap = true;
 		[SerializeField] private float m_maxSpeed = 1;
 		private Vector3 m_velocity;
-		private float m_angularSpeed;
 		private Transform m_transform;
 
 		public Vector3 Velocity
@@ -39,11 +39,50 @@ namespace Astrofox
 		private void Awake()
 		{
 			m_transform = transform;
+			Rigidbody body = GetComponent<Rigidbody>();
+			if (body == null)
+			{
+				// Used for triggering collision events only
+				body = gameObject.AddComponent<Rigidbody>();
+				body.isKinematic = true;
+				body.useGravity = false;
+			}
 		}
 
 		private void Update()
 		{
 			m_transform.Translate(Velocity * Time.deltaTime, Space.World);
+			if (m_wrap)
+			{
+				WrapAroundScreenEdges();
+			}
+		}
+
+		private void WrapAroundScreenEdges()
+		{
+			Vector3 position = m_transform.position;
+			Bounds worldBounds = Systems.GameCamera.WorldBounds;
+			if (position.x > worldBounds.max.x)
+			{
+				// Wrap right edge
+				position.x = worldBounds.min.x + position.x % worldBounds.max.x;
+			}
+			else if (position.x < worldBounds.min.x)
+			{
+				// Wrap left edge
+				position.x = worldBounds.max.x - position.x % worldBounds.min.x;
+			}
+			if (position.y > worldBounds.max.y)
+			{
+				// Wrap top edge
+				position.y = worldBounds.min.y + position.y % worldBounds.max.y;
+			}
+			else if (position.y < worldBounds.min.y)
+			{
+				// Wrap bottom edge
+				position.y = worldBounds.max.y - position.y % worldBounds.min.y;
+			}
+			m_transform.position = position;
 		}
 
 		public void AddForce(Vector3 force, Space space = Space.World)
