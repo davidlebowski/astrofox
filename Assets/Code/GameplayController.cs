@@ -1,17 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Astrofox
 {
-	public class GameplayController : MonoBehaviour
+	public class GameplayController : MonoBehaviour, IScoreController
 	{
 		private PlayerController m_playerController;
 		private Actor m_playerActor;
 
+		private Coroutine m_spawnerCoroutine;
 		private bool m_hasStarted;
 		private int m_currentScore;
+		private int m_numSpawnedActors;
 
 		public void StartGameplay()
 		{
@@ -22,6 +24,9 @@ namespace Astrofox
 			}
 			m_hasStarted = true;
 			SpawnPlayer();
+			m_spawnerCoroutine = StartCoroutine(SpawnerCoroutine());
+		}
+
 		private void StopGameplay()
 		{
 			int bestScore = Systems.PlayerProfile.BestScore;
@@ -33,6 +38,53 @@ namespace Astrofox
 			StopCoroutine(m_spawnerCoroutine);
 		}
 
+		private IEnumerator SpawnerCoroutine()
+		{
+			// We cache a dummy object for the binary search below
+			DifficultyMilestone lastKnownMilestone = null;
+			DifficultyMilestone milestoneWithScore = new DifficultyMilestone();
+			DropTable<ActorSpawnChance> actorDropTable = null;
+			while (true)
+			{
+				milestoneWithScore.Score = m_currentScore;
+				int currentMilestoneIndex = Array.BinarySearch(
+					Systems.GameConfig.DifficultyProgression,
+					milestoneWithScore,
+					DifficultyMilestone.BinarySearchComparer);
+				if (currentMilestoneIndex < 0)
+				{
+					// If it wasn't found, Array.BinarySearch returns the complement of the index to the closest-greater
+					// element that it could find. We want that element.
+					currentMilestoneIndex = ~currentMilestoneIndex - 1;
+				}
+				DifficultyMilestone currentMilestone = Systems.GameConfig.DifficultyProgression[currentMilestoneIndex];
+				if (currentMilestone != lastKnownMilestone)
+				{
+					// Recompute drop table if we're on a new milestone
+					actorDropTable = new DropTable<ActorSpawnChance>(currentMilestone.SpawnableActors,
+						i => currentMilestone.SpawnableActors[i].Chance);
+				}
+				lastKnownMilestone = currentMilestone;
+				yield return new WaitForSeconds(currentMilestone.SecondsBetweenSpawns);
+				if (m_numSpawnedActors < currentMilestone.MaxSpawnedActors && currentMilestone.MaxSpawnedActors > 0)
+				{
+					ActorSpawnChance drop = actorDropTable.Evaluate();
+					if (drop != null && drop.Actor != null)
+					{
+						SpawnActor(drop.Actor);
+					}
+				}
+			}
+		}
+
+		private void SpawnActor(Actor prefab)
+		{
+			// Pick the spawn location
+			Vector3 spawnPoint = Systems.GameCamera.GetRandomPointOnFrustumInWorldSpace();
+			Actor actorInst = Systems.GameObjectFactory.Instantiate(prefab);
+			actorInst.transform.position = spawnPoint;
+			++m_numSpawnedActors;
+			actorInst.OnDeath += actor => --m_numSpawnedActors;
 		}
 
 		private void SpawnPlayer()

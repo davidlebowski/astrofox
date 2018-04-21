@@ -11,6 +11,6 @@ namespace Astrofox
 		public float PlayerForwardThrust = 1f;
 		public float PlayerBackwardThrust = 0.5f;
 		[Header("Difficulty")]
-		public float m_secondsIntervalBetweenAsteroidSpawns;
+		public DifficultyMilestone[] DifficultyProgression;
 	}
 }

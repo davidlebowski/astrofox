@@ -13,3 +13,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 114755558827352942, guid: 6a64af0249f3c9349a876ff03f4d60a5,
     type: 2}
+  DifficultyProgression:
+  - Score: 0
+    SecondsBetweenSpawns: 1
+    MaxSpawnedActors: 4
+    SpawnableActors:
+    - Actor: {fileID: 114242334645761934, guid: e093180d154a8034881b8f5cf25163de,
+        type: 2}
+      Chance: 1
+  - Score: 50
+    SecondsBetweenSpawns: 1
+    MaxSpawnedActors: 0
+    SpawnableActors: []
+  - Score: 100
+    SecondsBetweenSpawns: 1
+    MaxSpawnedActors: 0
+    SpawnableActors: []
