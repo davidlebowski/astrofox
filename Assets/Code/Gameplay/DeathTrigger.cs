@@ -10,10 +10,17 @@ namespace Astrofox
 	{
 		[SerializeField] private BaseAction[] m_actions;
 
-		private void Awake()
+		private Actor m_actor;
+
+		private void OnEnable()
 		{
-			Actor actor = GetComponent<Actor>();
-			actor.OnDeath += OnDeath;
+			m_actor = GetComponent<Actor>();
+			m_actor.OnDeath += OnDeath;
+		}
+
+		private void OnDisable()
+		{
+			m_actor.OnDeath -= OnDeath;
 		}
 
 		private void OnDeath(Actor deadActor)

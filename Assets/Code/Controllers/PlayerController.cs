@@ -11,10 +11,12 @@ namespace Astrofox
 	public class PlayerController
 	{
 		public Actor PlayerActor { set; get; }
+		private readonly Weapon m_playerWeapon;
 
 		public PlayerController(Actor playerActor)
 		{
 			PlayerActor = playerActor;
+			m_playerWeapon = PlayerActor.GetComponent<Weapon>();
 		}
 
 		public void Update()
@@ -33,11 +35,15 @@ namespace Astrofox
 			}
 			if (Input.GetKey(KeyCode.W))
 			{
-				PlayerActor.AddForce(Vector3.left * Systems.GameConfig.PlayerForwardThrust, Space.Self);
+				PlayerActor.AddForce(PlayerActor.Forward * Systems.GameConfig.PlayerForwardThrust);
 			}
-			if (Input.GetKey(KeyCode.S))
+			else if (Input.GetKey(KeyCode.S))
 			{
-				PlayerActor.AddForce(Vector3.right * Systems.GameConfig.PlayerBackwardThrust, Space.Self);
+				PlayerActor.AddForce(-PlayerActor.Forward * Systems.GameConfig.PlayerBackwardThrust);
+			}
+			if (m_playerWeapon && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)))
+			{
+				m_playerWeapon.Shoot(PlayerActor.Forward);
 			}
 		}
 	}

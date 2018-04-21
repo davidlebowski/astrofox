@@ -11,7 +11,7 @@ namespace Astrofox
 	// - Game entities can drift in space, therefore it has a Velocity property that it uses to move the object every frame.
 	public class Actor : MonoBehaviour
 	{
-		private readonly static Bounds s_noBounds = new Bounds();
+		private static readonly Bounds s_noBounds = new Bounds();
 
 		public delegate void OnDeathDelegate(Actor deadActor);
 		public event OnDeathDelegate OnDeath;
@@ -36,6 +36,10 @@ namespace Astrofox
 					m_velocity = m_velocity / magnitude * m_maxSpeed;
 				}
 			}
+		}
+		public Vector3 Forward
+		{
+			get { return -transform.right; }
 		}
 		public Bounds Bounds
 		{
@@ -102,12 +106,8 @@ namespace Astrofox
 			m_transform.position = position;
 		}
 
-		public void AddForce(Vector3 force, Space space = Space.World)
+		public void AddForce(Vector3 force)
 		{
-			if (space == Space.Self)
-			{
-				force = transform.localToWorldMatrix * force;
-			}
 			Velocity += (force * Time.deltaTime) / m_mass;
 		}
 
@@ -122,7 +122,7 @@ namespace Astrofox
 			{
 				OnDeath(this);
 			}
-			Destroy(gameObject);
+			Systems.GameObjectFactory.Release(gameObject);
 		}
 	}
 }

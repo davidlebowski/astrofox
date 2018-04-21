@@ -10,7 +10,7 @@ namespace Astrofox
 	{
 		[SerializeField] private BaseAction[] m_actions;
 
-		private void Awake()
+		private void OnEnable()
 		{
 			ActionContext context = new ActionContext
 			{

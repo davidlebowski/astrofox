@@ -13,6 +13,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 114755558827352942, guid: 6a64af0249f3c9349a876ff03f4d60a5,
     type: 2}
+  PlayerRotationSpeed: 180
+  PlayerForwardThrust: 1
+  PlayerBackwardThrust: 0.5
+  DefaultInitialPoolSize: 10
+  PoolConfigs:
+  - GameObject: {fileID: 1790375074495258, guid: 91d007ff59be8534ab4e9ac418cf7c5d,
+      type: 2}
+    InitialSize: 20
+    GrowthFactor: 2
   DifficultyProgression:
   - Score: 0
     SecondsBetweenSpawns: 1

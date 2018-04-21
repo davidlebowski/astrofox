@@ -8,19 +8,22 @@ namespace Astrofox
 		[SerializeField] private GameUI m_gameUI;
 		[SerializeField] private GameConfig m_gameConfig;
 		private GameObject m_gameplayContainer;
+		private GameObjectPool m_gameObjectPool;
 
 		private GameplayController m_gameplayController;
 
 		private void Start()
 		{
 			m_gameplayContainer = new GameObject("GameplayContainer");
-			GameObjectFactory gameObjectFactory = new GameObjectFactory(m_gameplayContainer.transform);
+			m_gameObjectPool = new GameObject("GameObjectPool").AddComponent<GameObjectPool>();
+			m_gameObjectPool.SetConfigs(m_gameConfig.PoolConfigs);
+			GameObjectFactory gameObjectFactory = new GameObjectFactory(m_gameplayContainer.transform, m_gameObjectPool);
 			Systems.GameObjectFactory = gameObjectFactory;
 			Systems.GameCamera = m_gameCamera;
 			Systems.GameUI = m_gameUI;
 			Systems.GameplaySessionController = this;
 			Systems.GameConfig = m_gameConfig;
-			Systems.PlayerProfile = PlayerProfile.Load(); 
+			Systems.PlayerProfile = PlayerProfile.Load();
 
 			m_gameUI.OpenScreen(m_gameUI.ScreenMainMenu);
 		}
