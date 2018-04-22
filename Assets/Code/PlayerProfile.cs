@@ -4,8 +4,8 @@ namespace Astrofox
 {
 	public sealed class PlayerProfile
 	{
-		private const string BestScoreKey = "best_score";
-		public int BestScore;
+		private const string HighScoreKey = "high_score";
+		public int HighScore;
 
 		private PlayerProfile()
 		{
@@ -16,7 +16,7 @@ namespace Astrofox
 		{
 			// Rather than saving every time we change a key, we only save when we call Commit, to avoid spamming
 			// the backend with requests.
-			PlayerPrefs.SetInt(BestScoreKey, BestScore);
+			PlayerPrefs.SetInt(HighScoreKey, HighScore);
 		}
 
 		public static PlayerProfile Load()
@@ -25,7 +25,7 @@ namespace Astrofox
 			// We can always change the paradigm to asynchronous to support the profile being stored remotely.
 			return new PlayerProfile
 			{
-				BestScore = PlayerPrefs.GetInt(BestScoreKey, 0)
+				HighScore = PlayerPrefs.GetInt(HighScoreKey, 0)
 			};
 		}
 	}

@@ -12,13 +12,13 @@ namespace Astrofox
 
 		public override void Run(ActionContext context)
 		{
-			if (m_killThis)
-			{
-				TryKillActorIfExists(context.ThisGameObject);
-			}
 			if (m_killOther)
 			{
 				TryKillActorIfExists(context.OtherGameObject);
+			}
+			if (m_killThis)
+			{
+				TryKillActorIfExists(context.ThisGameObject);
 			}
 		}
 

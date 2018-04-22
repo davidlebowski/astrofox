@@ -32,12 +32,20 @@ namespace Astrofox
 		{
 			if (IsSessionInProgress())
 			{
-				Debug.LogError("StartGameplaySession: Gameplay session is already in progress.");
-				return false;
+				Transform containerTransform = m_gameplayController.transform;
+				for (int i = 0; i < containerTransform.childCount; ++i)
+				{
+					Systems.GameObjectFactory.Release(containerTransform.GetChild(i).gameObject);
+				}
+				Destroy(m_gameplayController);
 			}
 			m_gameUI.CloseAllScreens();
 			m_gameplayController = m_gameplayContainer.AddComponent<GameplayController>();
+			Systems.PlayerActorProvider = m_gameplayController;
+			Systems.ScoreController = m_gameplayController;
+			Systems.GameResultProvider = m_gameplayController;
 			m_gameplayController.StartGameplay();
+			m_gameUI.OpenScreen(m_gameUI.ScreenGameHud);
 			Systems.ScoreController = m_gameplayController;
 			return true;
 		}

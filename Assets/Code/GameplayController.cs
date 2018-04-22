@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 namespace Astrofox
 {
-	public class GameplayController : MonoBehaviour, IScoreController
+	public class GameplayController : MonoBehaviour, IScoreController, IPlayerActorProvider, IGameResultProvider
 	{
 		private PlayerController m_playerController;
 		private Actor m_playerActor;
@@ -15,6 +15,11 @@ namespace Astrofox
 		private int m_currentScore;
 		private int m_numSpawnedActors;
 
+		public Actor PlayerActor
+		{
+			get { return m_playerActor;  }
+		}
+
 		public void StartGameplay()
 		{
 			if (m_hasStarted)
@@ -23,19 +28,27 @@ namespace Astrofox
 				return;
 			}
 			m_hasStarted = true;
+			PreviousHighScore = Systems.PlayerProfile.HighScore;
 			SpawnPlayer();
 			m_spawnerCoroutine = StartCoroutine(SpawnerCoroutine());
 		}
 
 		private void StopGameplay()
 		{
-			int bestScore = Systems.PlayerProfile.BestScore;
-			if (m_currentScore > bestScore)
+			if (!m_hasStarted)
 			{
-				Systems.PlayerProfile.BestScore = m_currentScore;
+				Debug.LogError("Gameplay has not started yet!");
+				return;
+			}
+			m_hasStarted = false;
+			int highScore = Systems.PlayerProfile.HighScore;
+			if (m_currentScore > highScore)
+			{
+				Systems.PlayerProfile.HighScore = m_currentScore;
 				Systems.PlayerProfile.Commit();
 			}
 			StopCoroutine(m_spawnerCoroutine);
+			Systems.GameUI.OpenScreen(Systems.GameUI.ScreenGameOver);
 		}
 
 		private IEnumerator SpawnerCoroutine()
@@ -98,6 +111,7 @@ namespace Astrofox
 				Destroy(m_playerActor.gameObject);
 			}
 			m_playerActor = Systems.GameObjectFactory.Instantiate(Systems.GameConfig.PlayerPrefab);
+			m_playerActor.OnDeath += HandlePlayerDeath;
 			m_playerActor.transform.position = Vector3.zero;
 			if (m_playerController == null)
 			{
@@ -109,6 +123,11 @@ namespace Astrofox
 			}
 		}
 
+		private void HandlePlayerDeath(Actor deadActor)
+		{
+			StopGameplay();
+		}
+
 		private void Update()
 		{
 			if (!m_hasStarted)
@@ -118,9 +137,33 @@ namespace Astrofox
 			m_playerController.Update();
 		}
 
+		/////////////////////////////
+		// IScoreController
+		public event Action OnScoreChanged;
+
+		public int Score
+		{
+			get { return m_currentScore; }
+		}
+
 		public void AddScore(int amount)
 		{
-			m_currentScore += amount;
+			if (PlayerActor != null && !PlayerActor.IsDead && m_hasStarted)
+			{
+				m_currentScore += amount;
+				if (OnScoreChanged != null)
+				{
+					OnScoreChanged();
+				}
+			}
+		}
+
+		/////////////////////////////
+		// IGameResultProvider
+		public int PreviousHighScore { get; private set; }
+		public int CurrentHighScore
+		{
+			get { return Systems.PlayerProfile.HighScore; }
 		}
 	}
 }

@@ -148,7 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_wrap: 1
   m_maxSpeed: 1
-  Mass: 1
+  m_mass: 1
 --- !u!114 &114153719243707744
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -162,6 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_actions:
   - {fileID: 11400000, guid: 67e03c024d0c6f146b25775c8c80004a, type: 2}
+  - {fileID: 11400000, guid: f09f637210c827440abda059e7edb7b0, type: 2}
 --- !u!114 &114223745673710442
 MonoBehaviour:
   m_ObjectHideFlags: 1

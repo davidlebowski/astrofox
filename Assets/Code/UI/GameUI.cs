@@ -18,6 +18,7 @@ namespace Astrofox
 		// PROPERTIES
 		public UIScreen ScreenMainMenu { get { return m_screenMainMenu; } }
 		public UIScreen ScreenGameHud { get { return m_screenGameHud; } }
+		public UIScreen ScreenGameOver { get { return m_screenGameOver; } }
 
 		// PRIVATE FIELDS
 		private Dictionary<UIScreen, UIScreen> m_screenInstanceByPrefab = new Dictionary<UIScreen, UIScreen>();
