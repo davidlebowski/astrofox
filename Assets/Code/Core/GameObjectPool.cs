@@ -6,7 +6,13 @@ namespace Astrofox
 {
 	public class GameObjectPool : MonoBehaviour
 	{
-		private Dictionary<GameObject, List<PooledGameObject>> m_pooledObjects = new Dictionary<GameObject, List<PooledGameObject>>();
+		private class PoolContainer
+		{
+			public int Capacity;
+			public List<PooledGameObject> Pool = new List<PooledGameObject>();
+		}
+
+		private Dictionary<GameObject, PoolContainer> m_poolsByGameObject = new Dictionary<GameObject, PoolContainer>();
 		private Dictionary<GameObject, GameObjectPoolConfig> m_poolConfigs = new Dictionary<GameObject, GameObjectPoolConfig>();
 
 		public void SetConfigs(IEnumerable<GameObjectPoolConfig> poolConfigs)
@@ -24,28 +30,29 @@ namespace Astrofox
 
 		public GameObject Request(GameObject prefab)
 		{
-			List<PooledGameObject> pool;
-			if (!m_pooledObjects.TryGetValue(prefab, out pool))
+			PoolContainer poolContainer;
+			if (!m_poolsByGameObject.TryGetValue(prefab, out poolContainer))
 			{
-				pool = new List<PooledGameObject>();
+				poolContainer = new PoolContainer();
 				GameObjectPoolConfig config;
 				bool hasConfig = m_poolConfigs.TryGetValue(prefab, out config);
-				GrowPool(prefab, pool, hasConfig ? config.InitialSize : Systems.GameConfig.DefaultInitialPoolSize);
-				m_pooledObjects[prefab] = pool;
+				GrowPool(prefab, poolContainer, hasConfig ? config.InitialSize : Systems.GameConfig.DefaultInitialPoolSize);
+				m_poolsByGameObject[prefab] = poolContainer;
 			}
-			if (pool.Count == 0)
+			if (poolContainer.Pool.Count == 0)
 			{
 				// Pool is empty, try to grow it
 				GameObjectPoolConfig config;
-				if (m_poolConfigs.TryGetValue(prefab, out config) && config.GrowthFactor > 0)
+				if (m_poolConfigs.TryGetValue(prefab, out config) && config.GrowthFactor > 1)
 				{
-					GrowPool(prefab, pool, Mathf.CeilToInt(pool.Count * config.GrowthFactor));
+					GrowPool(prefab, poolContainer, Mathf.CeilToInt(poolContainer.Pool.Capacity * config.GrowthFactor));
 				}
 			}
 			GameObject acquiredGameObject = null;
-			if (pool.Count > 0)
+			if (poolContainer.Pool.Count > 0)
 			{
-				PooledGameObject pooled = pool[pool.Count - 1];
+				var pool = poolContainer.Pool;
+				PooledGameObject pooled = poolContainer.Pool[pool.Count - 1];
 				pool.RemoveAt(pool.Count - 1);
 				if (pooled == null)
 				{
@@ -62,29 +69,30 @@ namespace Astrofox
 
 		public void Release(PooledGameObject pooledGameObject)
 		{
-			List<PooledGameObject> pool;
-			if (!m_pooledObjects.TryGetValue(pooledGameObject.OriginalPrefab, out pool))
+			PoolContainer poolContainer;
+			if (!m_poolsByGameObject.TryGetValue(pooledGameObject.OriginalPrefab, out poolContainer))
 			{
 				Debug.LogErrorFormat("No pool exists for {0}", pooledGameObject);
 				return;
 			}
-			pool.Add(pooledGameObject);
+			poolContainer.Pool.Add(pooledGameObject);
 			pooledGameObject.gameObject.SetActive(false);
 			pooledGameObject.TriggerReleased();
 		}
 
-		private void GrowPool(GameObject prefab, List<PooledGameObject> pool, int newSize)
+		private void GrowPool(GameObject prefab, PoolContainer poolContainer, int newCapacity)
 		{
-			if (newSize <= pool.Count)
+			if (newCapacity <= poolContainer.Capacity)
 			{
-				Debug.LogErrorFormat("GrowPool: New pool size {0} must be greater than current {1}", newSize, pool.Count);
+				Debug.LogErrorFormat("GrowPool: New pool size {0} must be greater than current {1}", newCapacity, poolContainer.Capacity);
 				return;
 			}
-			int delta = newSize - pool.Count;
+			int delta = newCapacity - poolContainer.Capacity;
 			for (int i = 0; i < delta; ++i)
 			{
-				pool.Add(InstantiatePooledObject(prefab));
+				poolContainer.Pool.Add(InstantiatePooledObject(prefab));
 			}
+			poolContainer.Capacity = newCapacity;
 		}
 
 		private PooledGameObject InstantiatePooledObject(GameObject prefab)

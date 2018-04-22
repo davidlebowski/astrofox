@@ -64,6 +64,21 @@ namespace Astrofox
 			m_collider = GetComponent<Collider>();
 		}
 
+		private void Start()
+		{
+			PooledGameObject pooled = GetComponent<PooledGameObject>();
+			if (pooled != null)
+			{
+				pooled.OnReleased += Reset;
+			}
+		}
+
+		private void Reset()
+		{
+			IsDead = false;
+			m_velocity = Vector3.zero;
+		}
+
 		private void Update()
 		{
 			m_transform.Translate(Velocity * Time.deltaTime, Space.World);

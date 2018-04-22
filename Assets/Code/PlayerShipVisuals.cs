@@ -11,7 +11,7 @@ namespace Astrofox
 
 		public void SetThrustersDirection(Vector3 direction)
 		{
-			if (m_thrusters != null)
+			if (m_thrusters != null && direction != Vector3.zero)
 			{
 				m_thrusters.transform.forward = direction;
 			}

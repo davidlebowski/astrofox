@@ -15,9 +15,32 @@ namespace Astrofox
 			m_gameObjectPool = gameObjectPool;
 		}
 
-		public T Instantiate<T>(T prefab) where T : UnityEngine.Object
+		public GameObject Instantiate(GameObject prefab)
 		{
-			return Object.Instantiate(prefab, m_container.transform);
+			GameObject result = null;
+			if (m_gameObjectPool.IsConfiguredForPooling(prefab))
+			{
+				GameObject pooledObject = m_gameObjectPool.Request(prefab);
+				if (pooledObject != null)
+				{
+					result = pooledObject;
+				}
+			}
+			else
+			{
+				result = Object.Instantiate(prefab, m_container.transform);
+			}
+			return result;
+		}
+
+		public T Instantiate<T>(T prefab) where T : UnityEngine.MonoBehaviour
+		{
+			GameObject inst = Instantiate(prefab.gameObject);
+			if (inst != null)
+			{
+				return inst.GetComponent<T>();
+			}
+			return null;
 		}
 
 		public void Release(GameObject inst)

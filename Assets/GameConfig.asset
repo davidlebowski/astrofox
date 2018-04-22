@@ -21,7 +21,7 @@ MonoBehaviour:
   PoolConfigs:
   - GameObject: {fileID: 1790375074495258, guid: 91d007ff59be8534ab4e9ac418cf7c5d,
       type: 2}
-    InitialSize: 20
+    InitialSize: 10
     GrowthFactor: 2
   DifficultyProgression:
   - Score: 0
