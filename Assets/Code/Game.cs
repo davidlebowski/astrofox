@@ -32,6 +32,7 @@ namespace Astrofox
 		{
 			if (IsSessionInProgress())
 			{
+				// Destroy the old session and create a new one
 				Transform containerTransform = m_gameplayController.transform;
 				for (int i = 0; i < containerTransform.childCount; ++i)
 				{
