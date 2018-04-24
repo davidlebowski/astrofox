@@ -36,6 +36,7 @@ GameObject:
   - component: {fileID: 4051674367299646}
   - component: {fileID: 114493367159736812}
   - component: {fileID: 114491072592588874}
+  - component: {fileID: 114493688684185972}
   - component: {fileID: 114047280952355322}
   - component: {fileID: 114264885141296304}
   - component: {fileID: 114806336826042690}
@@ -157,9 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e45ba726d152cd448a0efe669fef39f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_chasePlayer: 1
-  m_chaseThrust: 50
-  m_shootIntervalSeconds: 5
+  m_shootIntervalSeconds: 3
 --- !u!114 &114493367159736812
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -174,6 +173,19 @@ MonoBehaviour:
   m_wrap: 1
   m_maxSpeed: 1
   m_mass: 1
+--- !u!114 &114493688684185972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1688208909916418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d398e64685c7bb4aa947b8caea2199a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_chaseThrust: 50
+  m_lookAtTarget: 0
 --- !u!114 &114806336826042690
 MonoBehaviour:
   m_ObjectHideFlags: 1

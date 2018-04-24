@@ -9,6 +9,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad1562a61b2a069448f7f60135c677fb, type: 3}
-  m_Name: action_score_saucer
+  m_Name: action_score_bug
   m_EditorClassIdentifier: 
-  m_score: 30
+  m_score: 20

@@ -39,8 +39,11 @@ namespace Astrofox
 		}
 		public Vector3 Forward
 		{
+			set { transform.right = -value; }
 			get { return -transform.right; }
 		}
+
+
 		public Bounds Bounds
 		{
 			get
