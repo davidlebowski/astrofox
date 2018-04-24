@@ -26,22 +26,38 @@ MonoBehaviour:
   DifficultyProgression:
   - Score: 0
     SecondsBetweenSpawns: 1
-    MaxSpawnedActors: 5
+    MaxSpawnedActors: 3
     SpawnableActors:
     - Actor: {fileID: 114242334645761934, guid: e093180d154a8034881b8f5cf25163de,
         type: 2}
       Chance: 1
   - Score: 100
     SecondsBetweenSpawns: 1
-    MaxSpawnedActors: 10
+    MaxSpawnedActors: 3
     SpawnableActors:
     - Actor: {fileID: 114242334645761934, guid: e093180d154a8034881b8f5cf25163de,
         type: 2}
       Chance: 1
+    - Actor: {fileID: 114493367159736812, guid: cc8724d779cbda047be7b4701c34b3d6,
+        type: 2}
+      Chance: 1
   - Score: 500
     SecondsBetweenSpawns: 1
-    MaxSpawnedActors: 15
+    MaxSpawnedActors: 5
     SpawnableActors:
     - Actor: {fileID: 114242334645761934, guid: e093180d154a8034881b8f5cf25163de,
+        type: 2}
+      Chance: 1
+    - Actor: {fileID: 114493367159736812, guid: cc8724d779cbda047be7b4701c34b3d6,
+        type: 2}
+      Chance: 1
+  - Score: 1000
+    SecondsBetweenSpawns: 1
+    MaxSpawnedActors: 8
+    SpawnableActors:
+    - Actor: {fileID: 114242334645761934, guid: e093180d154a8034881b8f5cf25163de,
+        type: 2}
+      Chance: 1
+    - Actor: {fileID: 114493367159736812, guid: cc8724d779cbda047be7b4701c34b3d6,
         type: 2}
       Chance: 1
