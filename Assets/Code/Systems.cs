@@ -1,10 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Astrofox;
-using UnityEngine;
-
-namespace Astrofox
+﻿namespace Astrofox
 {
 	// A hybrid between dependency injection and singleton pattern.
 	// It felt a bit overkill integrating a DI framework (e.g.: Zenject) just for this, so I decided to go for something
