@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_wrap: 1
-  m_maxSpeed: 100
+  m_maxSpeed: 7
   m_mass: 0.1
 --- !u!135 &135602153887928362
 SphereCollider:
